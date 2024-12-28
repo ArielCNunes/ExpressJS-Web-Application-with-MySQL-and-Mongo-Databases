@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Table</title>
+</head>
+<body>
+    <h1>Student Table</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% students.forEach(student => { %>
+                <tr>
+                    <td><%= student.sid %></td>
+                    <td><%= student.name %></td>
+                    <td><%= student.age %></td>
+                    <td><a href="/students/delete/<%= student.student_id %>">Delete</a></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</body>
+</html>
