@@ -108,12 +108,22 @@ app.post("/students/add", async (req, res) => {
 
     // Validate input
     let error = null;
-    if (!sid || sid.length < 4) {
+    if (!sid || sid.length !== 4) {
       error = "Student ID is invalid.";
     } else if (!name || name.length < 2) {
       error = "Name should be at least 2 characters.";
     } else if (!age || age < 18) {
       error = "Age should be 18 or older.";
+    }
+
+    // Check if student ID already exists
+    const existing = await pool.query(
+      "SELECT * FROM student WHERE sid = ?",
+      [sid]
+    );
+
+    if (existing.length > 0) {
+      error = "A student with this ID already exists.";
     }
 
     // Show error if validation fails
