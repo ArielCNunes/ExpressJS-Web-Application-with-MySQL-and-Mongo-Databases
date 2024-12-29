@@ -35,7 +35,7 @@ app.get("/students", async (req, res) => {
   }
 });
 
-// Form to edit student
+// UPDATE STUDENTS
 app.get("/students/edit/:sid", async (req, res) => {
   try {
     const pool = await poolPromise;
@@ -43,7 +43,7 @@ app.get("/students/edit/:sid", async (req, res) => {
 
     // Fetch student by ID
     const student = await pool.query("SELECT * FROM student WHERE sid = ?", [
-      sid
+      sid,
     ]);
 
     // Check if query returned rows
@@ -58,14 +58,13 @@ app.get("/students/edit/:sid", async (req, res) => {
   }
 });
 
-// Processing update
 app.post("/students/edit/:sid", async (req, res) => {
   try {
     const pool = await poolPromise;
     const sid = req.params.sid;
     const { name, age } = req.body;
 
-    // Validate
+    // Validate name and age
     let error = null;
     if (!name || name.length < 2) {
       error = "Name should be a minimum of 2 characters.";
@@ -97,10 +96,44 @@ app.post("/students/edit/:sid", async (req, res) => {
   }
 });
 
-app.use((req, res, next) => {
-  console.log(`Request: ${req.method} ${req.url}`);
-  console.log("Body:", req.body);
-  next();
+// ADD STUDENTS
+app.get("/students/add", (req, res) => {
+  res.render("addStudent", { error: null }); // Render form
+});
+
+app.post("/students/add", async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const { sid, name, age } = req.body;
+
+    // Validate input
+    let error = null;
+    if (!sid || sid.length < 4) {
+      error = "Student ID is invalid.";
+    } else if (!name || name.length < 2) {
+      error = "Name should be at least 2 characters.";
+    } else if (!age || age < 18) {
+      error = "Age should be 18 or older.";
+    }
+
+    // Show error if validation fails
+    if (error) {
+      return res.render("addStudent", { error });
+    }
+
+    // Insert student into MySQL database
+    await pool.query("INSERT INTO student (sid, name, age) VALUES (?, ?, ?)", [
+      sid,
+      name,
+      age,
+    ]);
+
+    // Redirect back to Students Page
+    res.redirect("/students");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
 });
 
 // GRADES FROM MYSQL
