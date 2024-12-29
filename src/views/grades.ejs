@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Grades</title>
-</head>
-<body>
-  <h1>Grades</h1>
-  <button onclick="window.location.href='/'">Home</button>
-  <table border="1">
-    <thead>
-      <tr>
-        <th>Student</th>
-        <th>Module</th>
-        <th>Grade</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% grade.forEach(grade => { %>
+  <head>
+    <title>Grades</title>
+  </head>
+  <body>
+    <h1>Grades</h1>
+    <button onclick="window.location.href='/'">Home</button> <!-- Home page button -->
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Module</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% grade.forEach(grade => { %>
         <tr>
           <td><%= grade.sName %></td>
           <td><%= grade.mName %></td>
           <td><%= grade.grade %></td>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-</body>
+        <% }); %>
+      </tbody>
+    </table>
+  </body>
 </html>

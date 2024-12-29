@@ -1,20 +1,22 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 var mongo = require("./mongo");
-var poolPromise = require("./db"); // Import promise
+
+// Import promise
+var poolPromise = require("./db");
 
 const app = express();
 const port = 3004;
 
-const bodyParser = require("body-parser");
-// Middleware to parse form data
+// Middleware for parsing URL-encoded form data
 app.use(bodyParser.urlencoded({ extended: true }));
-// Middleware to parse JSON data
+// Middleware for parsing JSON data in request bodies
 app.use(bodyParser.json());
 
 // Set view engine
 app.set("view engine", "ejs");
 
-// Main Page
+// Render main Page
 app.get("/", (req, res) => {
   res.render("mainPage", {
     studentLink: "/students",
@@ -27,7 +29,11 @@ app.get("/", (req, res) => {
 app.get("/students", async (req, res) => {
   try {
     const pool = await poolPromise;
+
+    // MySQL query
     const students = await pool.query("SELECT * FROM student");
+
+    // Send data to .ejs file
     res.render("students", { students: students });
   } catch (err) {
     console.error(err);
@@ -41,7 +47,7 @@ app.get("/students/edit/:sid", async (req, res) => {
     const pool = await poolPromise;
     const sid = req.params.sid;
 
-    // Fetch student by ID
+    // Get student by ID
     const student = await pool.query("SELECT * FROM student WHERE sid = ?", [
       sid,
     ]);
@@ -120,7 +126,6 @@ app.post("/students/add", async (req, res) => {
     const existing = await pool.query("SELECT * FROM student WHERE sid = ?", [
       sid,
     ]);
-
     if (existing.length > 0) {
       error = "A student with this ID already exists.";
     }
@@ -149,6 +154,8 @@ app.post("/students/add", async (req, res) => {
 app.get("/grades", async (req, res) => {
   try {
     const pool = await poolPromise;
+    
+    // Join MySQL tables to get data
     const grade = await pool.query(`
       SELECT 
         s.name AS sName, 
@@ -159,6 +166,8 @@ app.get("/grades", async (req, res) => {
       LEFT JOIN module m ON g.mid = m.mid
       ORDER BY s.name ASC, g.grade ASC;
     `);
+
+    // Render page
     res.render("grades", { grade: grade });
   } catch (err) {
     console.error(err);
@@ -172,7 +181,7 @@ app.get("/lecturers", async (req, res) => {
     // Get lecturers from MongoDB
     const lecturers = await mongo.findAll();
 
-    // Sort by Lecturer ID
+    // Sort by Lecturer ID (ascending order)
     lecturers.sort((a, b) => a._id.localeCompare(b._id));
 
     // Render lecturers.ejs
@@ -183,12 +192,12 @@ app.get("/lecturers", async (req, res) => {
   }
 });
 
-// DELETE LECTURERS
+// DELETE LECTURER
 app.post("/lecturers/delete/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
-    // Otherwise, delete lecturer
+    // Delete lecturer by ID
     await mongo.deleteById(id);
 
     // Back to lecturers page

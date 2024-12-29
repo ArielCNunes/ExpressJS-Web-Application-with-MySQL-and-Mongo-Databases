@@ -1,6 +1,7 @@
 const MongoClient = require("mongodb").MongoClient;
 let db; // Database reference
 
+// Connect to MongoDB
 MongoClient.connect("mongodb://127.0.0.1:27017")
   .then((client) => {
     db = client.db("proj2024MongoDB");
@@ -10,6 +11,7 @@ MongoClient.connect("mongodb://127.0.0.1:27017")
     console.log(error.message);
   });
 
+// Method to get all documents in database
 var findAll = function () {
   return new Promise((resolve, reject) => {
     coll
@@ -38,10 +40,11 @@ async function deleteById(id) {
     return await database.collection("lecturers").deleteOne({ _id: id });
   } catch (error) {
     console.error("Failed to delete lecturer:", error);
-    throw error; // Propagate error
+    throw error;
   }
 }
 
+// Export
 module.exports = {
   findAll,
   deleteById,
