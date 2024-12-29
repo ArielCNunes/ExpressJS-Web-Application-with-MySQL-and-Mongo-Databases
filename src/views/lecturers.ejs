@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lecturers</title>
+  </head>
+  <body>
+    <h1>Lecturers</h1>
+    <button onclick="window.location.href='/'">Home</button>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Lecturer ID</th>
+          <th>Name</th>
+          <th>Department ID</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% lecturers.forEach(lecturer => { %>
+        <tr>
+          <td><%= lecturer._id %></td>
+          <td><%= lecturer.name %></td>
+          <td><%= lecturer.did %></td>
+          <td>
+            <!-- Delete Button -->
+            <form
+              method="POST"
+              action="/lecturers/delete/<%= lecturer._id %>"
+              style="display: inline"
+            >
+              <button type="submit" onclick="return confirm('Are you sure?')">
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </body>
+</html>

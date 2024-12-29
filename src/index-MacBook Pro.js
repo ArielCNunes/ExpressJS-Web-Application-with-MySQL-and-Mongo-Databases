@@ -172,30 +172,14 @@ app.get("/lecturers", async (req, res) => {
     // Get lecturers from MongoDB
     const lecturers = await mongo.findAll();
 
-    // Sort by Lecturer ID
+    // Sort lecturers alphabetically by Lecturer ID
     lecturers.sort((a, b) => a._id.localeCompare(b._id));
 
     // Render lecturers.ejs
-    res.render("lecturers", { lecturers: lecturers, error: null });
+    res.render("lecturers", { lecturers: lecturers });
   } catch (error) {
     console.error(error);
     res.status(500).send("Failed to load lecturers.");
-  }
-});
-
-// DELETE LECTURERS
-app.post("/lecturers/delete/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    // Otherwise, delete lecturer
-    await mongo.deleteById(id);
-
-    // Back to lecturers page
-    res.redirect("/lecturers");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Failed to delete lecturer.");
   }
 });
 
