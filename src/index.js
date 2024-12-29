@@ -51,7 +51,7 @@ app.get("/students/edit/:sid", async (req, res) => {
       return res.status(404).send("Student not found");
     }
 
-    res.render("updateStudent", { student: student, error: null });
+    res.render("updateStudent", { student: student[0], error: null });
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
@@ -62,7 +62,8 @@ app.get("/students/edit/:sid", async (req, res) => {
 app.post("/students/edit/:sid", async (req, res) => {
   try {
     const pool = await poolPromise;
-    const { sid, name, age } = req.body;
+    const sid = req.params.sid;
+    const { name, age } = req.body;
 
     // Validate
     let error = null;
@@ -94,6 +95,12 @@ app.post("/students/edit/:sid", async (req, res) => {
     console.error(err);
     res.status(500).send("Database error");
   }
+});
+
+app.use((req, res, next) => {
+  console.log(`Request: ${req.method} ${req.url}`);
+  console.log("Body:", req.body);
+  next();
 });
 
 // GRADES FROM MYSQL

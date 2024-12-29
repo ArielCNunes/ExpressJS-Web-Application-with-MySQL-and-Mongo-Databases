@@ -13,14 +13,13 @@
 
     <!-- Update Form -->
     <form action="/students/edit/<%= student.sid %>" method="POST">
-      <input type="hidden" name="sid" value="<%= student.sid %>" />
       <label for="sid">Student ID:</label>
       <input
         type="text"
         id="sid"
-        name="sid_readonly"
+        name="sid"
         value="<%= student.sid %>"
-        placeholder="801-321-9876"
+        placeholder="<%= student.sid %>"
         readonly
       /><br /><br />
 
